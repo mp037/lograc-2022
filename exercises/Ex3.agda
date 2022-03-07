@@ -84,7 +84,7 @@ take-n {A} {suc n} {m} (x ∷ xs) = x ∷ take-n xs
 
 take-n' : {A : Set} {n m : ℕ} → Vec A (m + n) → Vec A n
 take-n' {A} {zero} {m} xs = []
-take-n' {A} {suc n} {m} xs = {!  !}
+take-n' {A} {suc n} {m} xs = {! xs !}
 
 {-
 ----------------
