@@ -84,9 +84,9 @@ take-n {A} {suc n} {m} (x ∷ xs) = x ∷ take-n xs
 
 take-n' : {A : Set} {n m : ℕ} → Vec A (m + n) → Vec A n
 take-n' {A} {zero} {m} xs = []
-take-n' {A} {suc n} {m} xs = {! xs !}
+take-n' {A} {suc n} {m} xs = take-n (subst (Vec A) (+-comm m (suc n)) xs)
 
-{-
+
 ----------------
 -- Exercise 2 --
 ----------------
@@ -159,7 +159,7 @@ lookup-total-Σ : {A : Set} {n : ℕ}
 
 lookup-total-Σ xs i p = {!!}
 
-
+{-
 ----------------
 -- Exercise 4 --
 ----------------
