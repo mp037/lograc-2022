@@ -108,13 +108,14 @@ record Dictionary {l₁ l₂ l₃ : Level}
                          → lkp d k ≡ nothing
                          → lkp (add-if-new d (k , x)) k ≡ just x
                          
-  lkp-add-if-new-nothing k x d p = {!!}
+  lkp-add-if-new-nothing k x d p with lkp d k 
+  ... | nothing = {!   !}
 
   lkp-add-if-new-just : (k : Keys) (x x' : A) (d : Dict)
                       → lkp d k ≡ just x'
                       → lkp (add-if-new d (k , x)) k ≡ just x'
                       
-  lkp-add-if-new-just k x x' d p = {!!}
+  lkp-add-if-new-just k x x' d p = {!   !}
 
 
 ----------------
@@ -139,13 +140,33 @@ module _ {l₁ l₂} (K : Key {l₁}) (A : Set l₂) where
   ListDict : Dictionary K A
   ListDict = record {
     Dict      = List (Keys × A) ;
-    emp       = {!!} ;
-    lkp       = {!!} ;
-    add       = {!!} ;
-    lkp-emp   = {!!} ;
-    lkp-add-≡ = {!!} ;
+    emp       = [];
+    lkp       = lkp-aux ;
+    add       = add-aux ;
+    lkp-emp   = λ k → refl ;
+    lkp-add-≡ = lkp-add-≡-aux ;
     lkp-add-≢ = {!!} }
+    
+    where
 
+    lkp-aux : List (Keys × A) → Keys → Maybe A
+    lkp-aux [] k = nothing
+    lkp-aux ((fst , snd) ∷ l) k with test-keys k fst
+    ... | yes p = just snd
+    ... | no p = lkp-aux l k
+    
+    add-aux : List (Keys × A) → Keys × A → List (Keys × A)
+    add-aux [] (k , x) = (k , x) ∷ []
+    add-aux ((fst , snd) ∷ l) (k , x) with test-keys k fst
+    ... | yes p = ((fst , snd) ∷ l)
+    ... | no p = (fst , snd) ∷ (add-aux l (k , x))
+
+    lkp-add-≡-aux : (k : Keys) (x : A) (d : List (Keys × A)) → lkp-aux (add-aux d (k , x)) k ≡ just x
+    --lkp-add-≡-aux k x [] with test-keys k k | inspect (test-keys k) k
+    --... | yes x₁ | [ eq ] = refl
+    --... | no x₁ | [ eq ] rewrite eq = {!   !}
+    lkp-add-≡-aux k x [] = {!   !}
+    lkp-add-≡-aux k x (x₁ ∷ d) = {!   !}
 
 ----------------
 -- Exercise 3 --

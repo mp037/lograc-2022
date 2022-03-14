@@ -68,12 +68,7 @@ postulate fun-ext : ∀ {a b} → Extensionality a b
 -}
 
 take-n : {A : Set} {n m : ℕ} → Vec A (n + m) → Vec A n
-<<<<<<< HEAD
-take-n {A} {zero} {m} xs = []
-take-n {A} {suc n} {m} (x ∷ xs) = x ∷ take-n xs
-=======
 take-n {A} {n} {m} xs = {!!}
->>>>>>> main
 
 {-
    Now define a function that extracts the first `n` elements from a

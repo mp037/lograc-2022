@@ -137,7 +137,19 @@ g ∘ᴹ f = record {
 infixl 7 _×ᴹ_
 
 _×ᴹ_ : ∀ {l} → Monoid {l} → Monoid {l} → Monoid {l}
-Mon₁ ×ᴹ Mon₂ = {!!}
+Mon₁ ×ᴹ Mon₂ = record
+   { M = M₁ × M₂
+   ; ε = ε₁ , ε₂
+   ; _·_ = λ (x₁ , x₂) (y₁ , y₂) → (x₁ ·₁ y₁) , (x₂ ·₂ y₂)
+   ; ε-left = λ (x , y) → {!  !}
+   ; ε-right = {!   !}
+   ; ·-assoc = {!   !}
+   }
+
+   where
+
+   open Monoid Mon₁ renaming (M to M₁ ; ε to ε₁ ; _·_ to _·₁_ ; ε-left to ε-left₁)
+   open Monoid Mon₂ renaming (M to M₂ ; ε to ε₂ ; _·_ to _·₂_ ; ε-left to ε-left₂)
 
 {-
    Prove that your definition of `×ᴹ` is indeed the Cartesian product
@@ -148,6 +160,7 @@ Mon₁ ×ᴹ Mon₂ = {!!}
    - show that the latter is a unique such (the eta-law).
 -}
 
+{-
 fst : ∀ {l} {Mon₁ Mon₂ : Monoid {l}} → Mon₁ ×ᴹ Mon₂ →ᴹ Mon₁
 fst {l} {Mon₁} {Mon₂} = {!!}
 
@@ -180,7 +193,6 @@ snd∘⟨,⟩ = {!!}
            
 ⟨,⟩-unique p q = {!!}
 
-
 -------------------------------------
 -- Bonus Monoid Morphisms Exercise --
 -------------------------------------
@@ -211,3 +223,5 @@ uip refl refl = refl
 
 →ᴹ-ext :  ∀ {l} {Mon₁ Mon₂ : Monoid {l}} {f g : Mon₁ →ᴹ Mon₂} → f ≡ᴹ g → f ≡ g
 →ᴹ-ext = {!!}
+-}
+ 

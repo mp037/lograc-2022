@@ -290,7 +290,8 @@ lookup-correct (x ∷ x₁) (suc i) (s≤s p) = lookup-correct x₁ i p
 -}
 
 take-n : {A : Set} {n m : ℕ} → Vec A (n + m) → Vec A n
-take-n xs = {! xs  !}
+take-n {n = zero} xs = []
+take-n {n = suc i} (x ∷ xs) = x ∷ take-n xs
 
 
 ----------------
@@ -304,7 +305,7 @@ take-n xs = {! xs  !}
 -}
 
 take-n' : {A : Set} {n m : ℕ} → Vec A (m + n) → Vec A n
-take-n' xs = {!!}
+take-n' xs = {!   !}
 
 
 ----------------
@@ -432,9 +433,15 @@ fill {n = suc n} x = x ∷ fill x
 
 transpose : {A : Set} {m n : ℕ} → Matrix A m n → Matrix A n m
 transpose [] = fill []
-transpose (xss ∷ xss₁) = {!   !}
+transpose (xss ∷ xss₁) = transpose-aux xss (transpose xss₁)
 
-{-
+   where
+
+   transpose-aux : {A : Set} {m n : ℕ} → Vec A n → Matrix A n m → Matrix A n (suc m)
+   transpose-aux [] [] = []
+   transpose-aux (x ∷ xs) (xss ∷ xss₁) = (x ∷ xss) ∷ (transpose-aux xs xss₁)
+
+
 -----------------
 -- Exercise 12 --
 -----------------
@@ -471,8 +478,17 @@ data _</≡/>_ (n m : ℕ) : Set where
 -}
 
 test-</≡/> : (n m : ℕ) → n </≡/> m
-test-</≡/> n m = {!!}
+test-</≡/> zero zero = n≡m refl
+test-</≡/> zero (suc m) = n<m (s≤s z≤n)
+test-</≡/> (suc n) zero = n>m (s≤s z≤n)
+test-</≡/> (suc n) (suc m) = </≡/>-suc (test-</≡/> n m)
 
+   where
+
+   </≡/>-suc : {n m : ℕ} → n </≡/> m → (suc n) </≡/> (suc m)
+   </≡/>-suc (n<m x) = n<m (s≤s x)
+   </≡/>-suc (n≡m x) = n≡m (cong suc x)
+   </≡/>-suc (n>m x) = n>m (s≤s x)
 
 -----------------
 -- Exercise 13 --
@@ -525,7 +541,11 @@ data Tree (A : Set) : Set where
 -}
 
 insert : Tree ℕ → ℕ → Tree ℕ
-insert t n = {!!}
+insert empty n = node empty n empty
+insert (node l x r) n with test-</≡/> n x
+... | n<m x₁ = node (insert l n) x r
+... | n≡m x₁ = node l n r
+... | n>m x₁ = node l x (insert r n)
 
 {-
    As a sanity check, prove that inserting 12, 27, and 52 into the above
@@ -535,17 +555,17 @@ insert t n = {!!}
 insert-12 : insert (node (node empty 22 (node empty 32 empty)) 42 (node empty 52 empty)) 12
             ≡
             node (node (node empty 12 empty) 22 (node empty 32 empty)) 42 (node empty 52 empty)
-insert-12 = {!!}
+insert-12 = refl
 
 insert-27 : insert (node (node empty 22 (node empty 32 empty)) 42 (node empty 52 empty)) 27
             ≡
             node (node empty 22 (node (node empty 27 empty) 32 empty)) 42 (node empty 52 empty)
-insert-27 = {!!}            
+insert-27 = refl            
 
 insert-52 : insert (node (node empty 22 (node empty 32 empty)) 42 (node empty 52 empty)) 52
             ≡
             node (node empty 22 (node empty 32 empty)) 42 (node empty 52 empty)
-insert-52 = {!!}
+insert-52 = refl
 
 
 -----------------
@@ -562,7 +582,9 @@ insert-52 = {!!}
 
 data _∈_ (n : ℕ) : Tree ℕ → Set where
   {- EXERCISE: the constructors for the `∈` relation go here -}
-
+   here : {l r : Tree ℕ} → n ∈ node l n r
+   left : {l r : Tree ℕ} {x : ℕ} → n ∈ l → n ∈ node l x r
+   right : {l r : Tree ℕ} {x : ℕ} → n ∈ r → n ∈ node l x r
 
 {-
    Prove that the tree returned by the `insert` function indeed
@@ -581,7 +603,11 @@ data _∈_ (n : ℕ) : Tree ℕ → Set where
 -}
 
 insert-∈ : (t : Tree ℕ) → (n : ℕ) → n ∈ (insert t n)
-insert-∈ t n = {!!}
+insert-∈ empty n = here
+insert-∈ (node l x r) n with test-</≡/> n x
+... | n<m x₁ = left (insert-∈ l n)
+... | n≡m x₁ = here
+... | n>m x₁ = right (insert-∈ r n)
 
 
 -----------------------------------
@@ -596,7 +622,7 @@ insert-∈ t n = {!!}
 -- MOST INVOLVED EXERCISES [START] --
 -------------------------------------
 -------------------------------------
-
+{-
 -----------------
 -- Exercise 15 --
 -----------------
