@@ -68,7 +68,8 @@ postulate fun-ext : ∀ {a b} → Extensionality a b
 -}
 
 take-n : {A : Set} {n m : ℕ} → Vec A (n + m) → Vec A n
-take-n {A} {n} {m} xs = {!!}
+take-n {A} {zero} {m} xs = []
+take-n {A} {suc n} {m} (x ∷ xs) = x ∷ (take-n xs)
 
 {-
    Now define a function that extracts the first `n` elements from a
@@ -85,7 +86,7 @@ take-n' : {A : Set} {n m : ℕ} → Vec A (m + n) → Vec A n
 take-n' {A} {zero} {m} xs = []
 take-n' {A} {suc n} {m} xs = take-n (subst (Vec A) (+-comm m (suc n)) xs)
 
-{-
+
 ----------------
 -- Exercise 2 --
 ----------------
@@ -118,7 +119,7 @@ list-vec (x ∷ xs) = x ∷ list-vec xs
 list-vec-list : {A : Set}
               → vec-list ∘ list-vec ≡ id {A = List A}
 
-list-vec-list = {!!}
+list-vec-list = fun-ext {!   !}
 
 {-
    Note: The dual lemma, showing that `list-vec` is the left inverse
@@ -463,8 +464,4 @@ open import Data.Nat.Properties
 
 from-bin-≡ : (b : Bin) → from-bin b ≡ from-bin' b
 from-bin-≡ b = {!!}
-<<<<<<< HEAD
 -}
-=======
--}
->>>>>>> main
