@@ -49,12 +49,12 @@ open module ND = Ex5.NaturalDeduction AtomicFormula
 ⇒-contravariant : (φ ψ ξ : Formula)
                 → [] ⊢ (φ ⇒ ψ) ⇒ (ψ ⇒ ξ) ⇒ φ ⇒ ξ
            
-⇒-contravariant φ ψ ξ = {!!}
+⇒-contravariant φ ψ ξ = ⇒-intro (⇒-intro (⇒-intro (⇒-elim (hyp (ψ ⇒ ξ)) (⇒-elim (hyp (φ ⇒ ψ)) (hyp φ)))))
 
 ⇒-covariant : (φ ψ ξ : Formula)
             → [] ⊢ (φ ⇒ ψ) ⇒ (ξ ⇒ φ) ⇒ ξ ⇒ ψ
             
-⇒-covariant φ ψ ξ = {!!}
+⇒-covariant φ ψ ξ = ⇒-intro (⇒-intro (⇒-intro (⇒-elim (hyp (φ ⇒ ψ)) (⇒-elim (hyp (ξ ⇒ φ)) (hyp ξ)))))
 
 {-
    Next, show that `⇒` and `∧` form an adjunction.
@@ -63,7 +63,11 @@ open module ND = Ex5.NaturalDeduction AtomicFormula
 ⇒-∧-adjunction : (φ ψ ξ : Formula)
                → [] ⊢ (φ ⇒ ψ ⇒ ξ) ⇔ φ ∧ ψ ⇒ ξ
            
-⇒-∧-adjunction φ ψ ξ = {!!}
+⇒-∧-adjunction φ ψ ξ = ∧-intro (⇒-intro (⇒-intro 
+      (⇒-elim 
+         (⇒-elim (hyp (φ ⇒ ψ ⇒ ξ)) (∧-elim₁ (hyp (φ ∧ ψ)))) 
+         (∧-elim₂ ((hyp (φ ∧ ψ))))) )) 
+      (⇒-intro (⇒-intro (⇒-intro (⇒-elim (hyp (φ ∧ ψ ⇒ ξ)) (∧-intro (hyp φ) (hyp ψ))))))
 
 {-
    Finally, show that `⇒` preserves `⊤` and `∧` in its second
@@ -73,12 +77,20 @@ open module ND = Ex5.NaturalDeduction AtomicFormula
 ⇒-preserves-⊤ : (φ : Formula)
               → [] ⊢ ⊤ ⇔ φ ⇒ ⊤
 
-⇒-preserves-⊤ φ = {!!}
+⇒-preserves-⊤ φ = ∧-intro 
+   (⇒-intro (⇒-intro ⊤-intro)) 
+   (⇒-intro ⊤-intro)
 
 ⇒-preserves-∧ : (φ ψ ξ : Formula)
               → [] ⊢ φ ⇒ ψ ∧ ξ ⇔ (φ ⇒ ψ) ∧ (φ ⇒ ξ)
 
-⇒-preserves-∧ φ ψ ξ = {!!}
+⇒-preserves-∧ φ ψ ξ = ∧-intro 
+   (⇒-intro (∧-intro 
+      (⇒-intro (∧-elim₁ (⇒-elim (hyp (φ ⇒ ψ ∧ ξ)) (hyp φ))))
+      ((⇒-intro (∧-elim₂ (⇒-elim (hyp (φ ⇒ ψ ∧ ξ)) (hyp φ))))))) 
+   (⇒-intro (⇒-intro (∧-intro 
+      (⇒-elim (∧-elim₁ (hyp ((φ ⇒ ψ) ∧ (φ ⇒ ξ)))) (hyp φ)) 
+      ((⇒-elim (∧-elim₂ (hyp ((φ ⇒ ψ) ∧ (φ ⇒ ξ)))) (hyp φ))))))
 
 
 ----------------
@@ -96,7 +108,11 @@ open module ND = Ex5.NaturalDeduction AtomicFormula
 demorgan₁₂ : (φ ψ : Formula)
            → [] ⊢ ¬ (φ ∨ ψ) ⇔ ¬ φ ∧ ¬ ψ
 
-demorgan₁₂ φ ψ = {!!}
+demorgan₁₂ φ ψ = ∧-intro 
+   (⇒-intro (∧-intro 
+      (⇒-intro (⇒-elim {!   !} (hyp φ))) 
+      {!   !})) 
+   {!   !}
 
 {-
    This De Morgan's law holds in only one direction in intuitionistic logic.
